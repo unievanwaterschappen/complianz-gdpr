@@ -320,7 +320,8 @@ if ( ! class_exists( 'COMPLIANZ' ) ) {
 			require_once CMPLZ_PATH . 'cron/cron.php';
 
 			/* Gutenberg block */
-			if ( cmplz_uses_gutenberg() ) {
+			$use_gutenberg = false;
+			if ( cmplz_uses_gutenberg() && $use_gutenberg ) {
 				require_once plugin_dir_path( __FILE__ ) . 'gutenberg/block.php';
 			}
 			require_once plugin_dir_path( __FILE__ ) . 'rest-api/rest-api.php';
