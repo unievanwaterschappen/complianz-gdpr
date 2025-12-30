@@ -6,7 +6,7 @@ Requires at least: 5.9
 License: GPL2
 Requires PHP: 7.4
 Tested up to: 6.8
-Stable tag: 7.4.2
+Stable tag: 7.4.3
 
 Configure your Cookie Banner, Cookie Consent and Cookie Policy with our Wizard and Cookies Scan.
 
@@ -198,6 +198,18 @@ The Brazilian General Data Protection Law is similar to the GDPR, the UK-GDPR it
 With some custom CSS this is possible, but we do not consider a cookie wall to be GDPR compliant, so it's not actively supported. We do, however, have the option to create a Soft Cookie Wall. Which blocks interaction with the website, but dismissing remains a possibility.
 
 == Changelog ==
+= 7.4.3 =
+* October 30th, 2025
+* Enhancement: Added `cmplz_prevent_get_shortcode_page_id` filter to allow developers to prevent execution of `get_shortcode_page_id`.
+* Enhancement: Optimized DNSMPD export for large datasets.
+* Enhancement: Updated mPDF library for improved PHP compatibility (7.4 to 8.4)
+* Improvement: Updated services: Vimeo, X (Formerly Twitter), Linkedin. Added Snapchat.
+* Improvement: Added FunnelKit and updated Wp Google Maps integration.
+* Accessibility: Improved link semantics and aria-labels for “Read more” and cookie banner links
+* Fix: Correct typos and spelling errors.
+* Fix: Google Analytics, fixed "empty additional tag" issue.
+
+
 = 7.4.2 =
 * July 11th, 2025
 * Translations: Updated translations.
