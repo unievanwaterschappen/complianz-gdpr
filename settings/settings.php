@@ -239,7 +239,7 @@ function cmplz_plugin_admin_scripts() {
 								),
 								admin_url( 'admin-ajax.php' ) ),
 						'dashboard_url'     => cmplz_admin_url(),
-						'upgrade_link'      => 'https://complianz.io/pricing',
+						'upgrade_link'      => cmplz_get_referral_url( 'menu', 'header'),
 						'plugin_url'        => CMPLZ_URL,
 						'license_url'      =>  is_multisite() ? cmplz_main_site_url('#settings/license') : '#settings/license',
 						'blocks'            => cmplz_blocks(),
@@ -368,7 +368,7 @@ function cmplz_add_option_menu() {
 			$submenu['complianz'][] = array(
 					__( 'Upgrade to premium', 'complianz-gdpr' ),
 					apply_filters('cmplz_capability','manage_privacy'),
-					'https://complianz.io/l/pricing'
+					cmplz_get_referral_url( 'menu', 'admin-submenu', 'https://complianz.io/l/pricing' )
 			);
 			if ( isset( $submenu['complianz'][$highest_index] ) ) {
 				if (! isset ($submenu['complianz'][$highest_index][4])) $submenu['complianz'][$highest_index][4] = '';

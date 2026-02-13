@@ -1,9 +1,10 @@
 <?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName
+
 /**
  * Plugin Name: Complianz | GDPR/CCPA Cookie Consent
  * Plugin URI: https://www.wordpress.org/plugins/complianz-gdpr
  * Description: Complianz Privacy Suite for GDPR, CaCPA, DSVGO, AVG with a conditional cookie warning and customized cookie policy
- * Version: 7.4.3
+ * Version: 7.4.4.2
  * Requires at least: 5.9
  * Requires PHP: 7.4
  * Text Domain: complianz-gdpr
@@ -29,19 +30,20 @@
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-defined( 'ABSPATH' ) || die( 'You do not have access to this page!' );
+defined('ABSPATH') || die('You do not have access to this page!');
 
-define( 'cmplz_free', true );
+define('cmplz_free', true);
 
-if ( ! function_exists( 'cmplz_activation_check' ) ) {
+if (! function_exists('cmplz_activation_check')) {
 	/**
 	 * Checks if the plugin can safely be activated, at least php 5.6 and wp 4.6
 	 *
 	 * @since 2.1.5
 	 */
-	function cmplz_activation_check() {
-		if ( version_compare( PHP_VERSION, '7.2', '<' ) ) {
-			deactivate_plugins( plugin_basename( __FILE__ ) );
+	function cmplz_activation_check()
+	{
+		if (version_compare(PHP_VERSION, '7.2', '<')) {
+			deactivate_plugins(plugin_basename(__FILE__));
 			wp_die(
 				__( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					'Complianz GDPR cannot be activated. The plugin requires PHP 7.2 or higher',
@@ -51,8 +53,8 @@ if ( ! function_exists( 'cmplz_activation_check' ) ) {
 		}
 
 		global $wp_version;
-		if ( version_compare( $wp_version, '4.9', '<' ) ) {
-			deactivate_plugins( plugin_basename( __FILE__ ) );
+		if (version_compare($wp_version, '4.9', '<')) {
+			deactivate_plugins(plugin_basename(__FILE__));
 			wp_die(
 				__( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					'Complianz GDPR cannot be activated. The plugin requires WordPress 4.9 or higher',
@@ -62,20 +64,21 @@ if ( ! function_exists( 'cmplz_activation_check' ) ) {
 		}
 	}
 
-	register_activation_hook( __FILE__, 'cmplz_activation_check' );
+	register_activation_hook(__FILE__, 'cmplz_activation_check');
 }
 
-require_once plugin_dir_path( __FILE__ ) . 'functions.php';
+require_once plugin_dir_path(__FILE__) . 'functions.php';
 
 /**
  * Instantiate plugin
  */
-if ( ! class_exists( 'COMPLIANZ' ) ) {
+if (! class_exists('COMPLIANZ')) {
 
 	/**
 	 * Class COMPLIANZ
 	 */
-	class COMPLIANZ { // phpcs:ignore Universal.Files.SeparateFunctionsFromOO.Mixed, Generic.Classes.OpeningBraceSameLine.ContentAfterBrace
+	class COMPLIANZ
+	{ // phpcs:ignore Universal.Files.SeparateFunctionsFromOO.Mixed, Generic.Classes.OpeningBraceSameLine.ContentAfterBrace
 
 		/**
 		 * Instance.
@@ -242,7 +245,8 @@ if ( ! class_exists( 'COMPLIANZ' ) ) {
 		/**
 		 * COMPLIANZ constructor.
 		 */
-		private function __construct() {
+		private function __construct()
+		{
 			$this->run();
 		}
 
@@ -252,7 +256,8 @@ if ( ! class_exists( 'COMPLIANZ' ) ) {
 		 *
 		 * @return void
 		 */
-		public function run(): void {
+		public function run(): void
+		{
 			$this->define_constants();
 			$this->includes();
 			$this->instantiate_classes();
@@ -266,9 +271,11 @@ if ( ! class_exists( 'COMPLIANZ' ) ) {
 		 * @return COMPLIANZ
 		 * @since 1.0.0
 		 */
-		public static function get_instance() {
-			if ( ! isset( self::$instance )
-				&& ! ( self::$instance instanceof COMPLIANZ )
+		public static function get_instance()
+		{
+			if (
+				! isset(self::$instance)
+				&& ! (self::$instance instanceof COMPLIANZ)
 			) {
 				self::$instance = new self();
 			}
@@ -282,28 +289,29 @@ if ( ! class_exists( 'COMPLIANZ' ) ) {
 		 *
 		 * @return void
 		 */
-		private function define_constants() {
-			define( 'CMPLZ_COOKIEDATABASE_URL', 'https://cookiedatabase.org/wp-json/cookiedatabase/' );
-			define( 'CMPLZ_MAIN_MENU_POSITION', 40 );
+		private function define_constants()
+		{
+			define('CMPLZ_COOKIEDATABASE_URL', 'https://cookiedatabase.org/wp-json/cookiedatabase/');
+			define('CMPLZ_MAIN_MENU_POSITION', 40);
 
 			// default region code.
-			if ( ! defined( 'CMPLZ_DEFAULT_REGION' ) ) {
-				define( 'CMPLZ_DEFAULT_REGION', 'us' );
+			if (! defined('CMPLZ_DEFAULT_REGION')) {
+				define('CMPLZ_DEFAULT_REGION', 'us');
 			}
 
 			/*statistics*/
-			if ( ! defined( 'CMPLZ_AB_TESTING_DURATION' ) ) {
-				define( 'CMPLZ_AB_TESTING_DURATION', 30 );
+			if (! defined('CMPLZ_AB_TESTING_DURATION')) {
+				define('CMPLZ_AB_TESTING_DURATION', 30);
 			} //Days
 
-			define( 'CMPLZ_URL', plugin_dir_url( __FILE__ ) );
-			define( 'CMPLZ_PATH', plugin_dir_path( __FILE__ ) );
-			define( 'CMPLZ_PLUGIN', plugin_basename( __FILE__ ) );
+			define('CMPLZ_URL', plugin_dir_url(__FILE__));
+			define('CMPLZ_PATH', plugin_dir_path(__FILE__));
+			define('CMPLZ_PLUGIN', plugin_basename(__FILE__));
 			// for auto upgrade functionality.
-			define( 'CMPLZ_PLUGIN_FREE', plugin_basename( __FILE__ ) );
-			$debug = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '#' . time() : '';
-			define( 'CMPLZ_VERSION', '7.4.3' . $debug );
-			define( 'CMPLZ_PLUGIN_FILE', __FILE__ );
+			define('CMPLZ_PLUGIN_FREE', plugin_basename(__FILE__));
+			$debug = (defined('SCRIPT_DEBUG') && SCRIPT_DEBUG) ? '#' . time() : '';
+			define('CMPLZ_VERSION', '7.4.4.2' . $debug);
+			define('CMPLZ_PLUGIN_FILE', __FILE__);
 		}
 
 
@@ -312,7 +320,8 @@ if ( ! class_exists( 'COMPLIANZ' ) ) {
 		 *
 		 * @return void
 		 */
-		private function includes() {
+		private function includes()
+		{
 			require_once CMPLZ_PATH . 'documents/class-document.php';
 			require_once CMPLZ_PATH . 'cookie/class-cookie.php';
 			require_once CMPLZ_PATH . 'cookie/class-service.php';
@@ -321,12 +330,12 @@ if ( ! class_exists( 'COMPLIANZ' ) ) {
 
 			/* Gutenberg block */
 			$use_gutenberg = false;
-			if ( cmplz_uses_gutenberg() && $use_gutenberg ) {
-				require_once plugin_dir_path( __FILE__ ) . 'gutenberg/block.php';
+			if (cmplz_uses_gutenberg() && $use_gutenberg) {
+				require_once plugin_dir_path(__FILE__) . 'gutenberg/block.php';
 			}
-			require_once plugin_dir_path( __FILE__ ) . 'rest-api/rest-api.php';
+			require_once plugin_dir_path(__FILE__) . 'rest-api/rest-api.php';
 
-			if ( cmplz_admin_logged_in() ) {
+			if (cmplz_admin_logged_in()) {
 				require_once CMPLZ_PATH . 'config/warnings.php';
 				require_once CMPLZ_PATH . 'settings/settings.php';
 				require_once CMPLZ_PATH . 'class-admin.php';
@@ -338,7 +347,7 @@ if ( ! class_exists( 'COMPLIANZ' ) ) {
 				require_once CMPLZ_PATH . 'settings/wizard.php';
 				require_once CMPLZ_PATH . 'placeholders/class-placeholders.php';
 
-				if ( isset( $_GET['install_pro'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+				if (isset($_GET['install_pro'])) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 					require_once CMPLZ_PATH . 'upgrade/upgrade-to-pro.php';
 				}
 
@@ -349,7 +358,7 @@ if ( ! class_exists( 'COMPLIANZ' ) ) {
 				require_once CMPLZ_PATH . 'websitescan/class-wsc.php';
 			}
 
-			if ( cmplz_admin_logged_in() || cmplz_scan_in_progress() ) {
+			if (cmplz_admin_logged_in() || cmplz_scan_in_progress()) {
 				require_once CMPLZ_PATH . 'cookie/class-scan.php';
 			}
 
@@ -372,12 +381,13 @@ if ( ! class_exists( 'COMPLIANZ' ) ) {
 		 *
 		 * @return void
 		 */
-		private function instantiate_classes(): void {
+		private function instantiate_classes(): void
+		{
 			self::$config  = new cmplz_config();
 			self::$company = new cmplz_company();
 			self::$DNSMPD  = new cmplz_DNSMPD(); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 
-			if ( cmplz_admin_logged_in() ) {
+			if (cmplz_admin_logged_in()) {
 				self::$admin_DNSMPD    = new cmplz_admin_DNSMPD(); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 				self::$review          = new cmplz_review();
 				self::$admin           = new cmplz_admin();
@@ -390,7 +400,7 @@ if ( ! class_exists( 'COMPLIANZ' ) ) {
 				self::$wsc_onboarding  = new cmplz_wsc_onboarding();
 			}
 
-			if ( cmplz_admin_logged_in() || cmplz_scan_in_progress() ) {
+			if (cmplz_admin_logged_in() || cmplz_scan_in_progress()) {
 				self::$scan = new cmplz_scan();
 			}
 
@@ -408,15 +418,16 @@ if ( ! class_exists( 'COMPLIANZ' ) ) {
 		 *
 		 * @return void
 		 */
-		private function hooks() {
-			add_action( 'init', array( $this, 'load_textdomain' ), 0 );
+		private function hooks()
+		{
+			add_action('init', array($this, 'load_textdomain'), 0);
 
-			if ( wp_doing_ajax() ) {
+			if (wp_doing_ajax()) {
 				// using init on ajax calls, as wp is not running.
-				add_action( 'init', 'cmplz_init_cookie_blocker' );
+				add_action('init', 'cmplz_init_cookie_blocker');
 			} else {
 				// has to be wp for all non ajax calls, because of AMP plugin.
-				add_action( 'wp', 'cmplz_init_cookie_blocker' );
+				add_action('wp', 'cmplz_init_cookie_blocker');
 			}
 		}
 
@@ -428,8 +439,9 @@ if ( ! class_exists( 'COMPLIANZ' ) ) {
 		 *
 		 * @return void
 		 */
-		public function load_textdomain(): void {
-			load_plugin_textdomain( 'complianz-gdpr' );
+		public function load_textdomain(): void
+		{
+			load_plugin_textdomain('complianz-gdpr');
 		}
 	}
 
@@ -445,34 +457,36 @@ if ( ! class_exists( 'COMPLIANZ' ) ) {
 	);
 }
 
-if ( ! function_exists( 'cmplz_set_activation_time_stamp' ) ) {
+if (! function_exists('cmplz_set_activation_time_stamp')) {
 	/**
 	 * Set an activation time stamp.
 	 *
 	 * @param bool $networkwide Whether the plugin is being activated network-wide.
 	 * @return void
 	 */
-	function cmplz_set_activation_time_stamp( $networkwide ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found -- We need this parameter for the activation hook
-		update_option( 'cmplz_activation_time', time() );
-		update_option( 'cmplz_run_activation', true, false );
-		set_transient( 'cmplz_redirect_to_settings_page', true, HOUR_IN_SECONDS );
+	function cmplz_set_activation_time_stamp($networkwide)
+	{ // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found -- We need this parameter for the activation hook
+		update_option('cmplz_activation_time', time());
+		update_option('cmplz_run_activation', true, false);
+		set_transient('cmplz_redirect_to_settings_page', true, HOUR_IN_SECONDS);
 	}
 
-	register_activation_hook( __FILE__, 'cmplz_set_activation_time_stamp' );
+	register_activation_hook(__FILE__, 'cmplz_set_activation_time_stamp');
 }
 
-if ( ! function_exists( 'cmplz_activation_check' ) ) {
+if (! function_exists('cmplz_activation_check')) {
 	/**
 	 * Start the tour of the plugin on activation
 	 */
-	function cmplz_activation_check() {
-		do_action( 'cmplz_activation' );
+	function cmplz_activation_check()
+	{
+		do_action('cmplz_activation');
 	}
 
-	register_activation_hook( __FILE__, 'cmplz_activation_check' );
+	register_activation_hook(__FILE__, 'cmplz_activation_check');
 }
 
-if ( ! function_exists( 'cmplz_is_logged_in_rest' ) ) {
+if (! function_exists('cmplz_is_logged_in_rest')) {
 	/**
 	 * Check if a user is logged in for Complianz REST API requests.
 	 *
@@ -482,10 +496,11 @@ if ( ! function_exists( 'cmplz_is_logged_in_rest' ) ) {
 	 *
 	 * @return bool True if the request is for the Complianz REST API and the user is logged in, false otherwise.
 	 */
-	function cmplz_is_logged_in_rest() {
+	function cmplz_is_logged_in_rest()
+	{
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		$is_settings_page_request = isset( $_SERVER['REQUEST_URI'] ) && strpos( $_SERVER['REQUEST_URI'], '/complianz/v1/' ) !== false;
-		if ( ! $is_settings_page_request ) {
+		$is_settings_page_request = isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], '/complianz/v1/') !== false;
+		if (! $is_settings_page_request) {
 			return false;
 		}
 
@@ -493,16 +508,17 @@ if ( ! function_exists( 'cmplz_is_logged_in_rest' ) ) {
 	}
 }
 
-if ( ! function_exists( 'cmplz_admin_logged_in' ) ) {
+if (! function_exists('cmplz_admin_logged_in')) {
 	/**
 	 * Check if an admin user is logged in.
-	 */ function cmplz_admin_logged_in() {
-		$wpcli = defined( 'WP_CLI' ) && WP_CLI;
-		return ( is_admin() && cmplz_user_can_manage() ) || cmplz_is_logged_in_rest() || wp_doing_cron() || $wpcli || defined( 'CMPLZ_DOING_SYSTEM_STATUS' );
+	 */ function cmplz_admin_logged_in()
+	{
+		$wpcli = defined('WP_CLI') && WP_CLI;
+		return (is_admin() && cmplz_user_can_manage()) || cmplz_is_logged_in_rest() || wp_doing_cron() || $wpcli || defined('CMPLZ_DOING_SYSTEM_STATUS');
 	}
 }
 
-if ( ! function_exists( 'cmplz_add_manage_privacy_capability' ) ) {
+if (! function_exists('cmplz_add_manage_privacy_capability')) {
 	/**
 	 * Assign the 'manage_privacy' capability to administrators.
 	 *
@@ -515,26 +531,27 @@ if ( ! function_exists( 'cmplz_add_manage_privacy_capability' ) ) {
 	 *
 	 * @return void
 	 */
-	function cmplz_add_manage_privacy_capability( $handle_subsites = true ) {
+	function cmplz_add_manage_privacy_capability($handle_subsites = true)
+	{
 		$capability = 'manage_privacy';
-		$role       = get_role( 'administrator' );
-		if ( $role && ! $role->has_cap( $capability ) ) {
-			$role->add_cap( $capability );
+		$role       = get_role('administrator');
+		if ($role && ! $role->has_cap($capability)) {
+			$role->add_cap($capability);
 		}
 
 		// we need to add this role across subsites as well.
-		if ( $handle_subsites && is_multisite() ) {
+		if ($handle_subsites && is_multisite()) {
 			$sites = get_sites();
-			if ( count( $sites ) > 0 ) {
-				foreach ( $sites as $site ) {
-					switch_to_blog( $site->blog_id );
-					cmplz_add_manage_privacy_capability( false );
+			if (count($sites) > 0) {
+				foreach ($sites as $site) {
+					switch_to_blog($site->blog_id);
+					cmplz_add_manage_privacy_capability(false);
 					restore_current_blog();
 				}
 			}
 		}
 	}
-	register_activation_hook( __FILE__, 'cmplz_add_manage_privacy_capability' );
+	register_activation_hook(__FILE__, 'cmplz_add_manage_privacy_capability');
 
 	/**
 	 * Assign Complianz management capabilities to a new subsite in a multisite network.
@@ -543,10 +560,11 @@ if ( ! function_exists( 'cmplz_add_manage_privacy_capability' ) ) {
 	 *
 	 * @return void
 	 */
-	function cmplz_add_role_to_subsite( $site ) {
-		switch_to_blog( $site->blog_id );
-		cmplz_add_manage_privacy_capability( false );
+	function cmplz_add_role_to_subsite($site)
+	{
+		switch_to_blog($site->blog_id);
+		cmplz_add_manage_privacy_capability(false);
 		restore_current_blog();
 	}
-	add_action( 'wp_initialize_site', 'cmplz_add_role_to_subsite', 10, 1 );
+	add_action('wp_initialize_site', 'cmplz_add_role_to_subsite', 10, 1);
 }

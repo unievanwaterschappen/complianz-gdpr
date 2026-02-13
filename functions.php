@@ -419,8 +419,8 @@ if ( ! function_exists( 'cmplz_get_stats_tool_nice' ) ) {
 				return "Google Tag Manager";
 			case 'matomo-tag-manager':
 				return "Matomo Tag Manager";
-				case 'clarity':
-					return "Clarity";
+			case 'clarity':
+				return "Clarity";
 			default:
 				return __("Not found","complianz-gdpr");
 		}

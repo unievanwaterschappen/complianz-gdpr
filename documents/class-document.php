@@ -1172,13 +1172,12 @@ if ( ! class_exists( "cmplz_document" ) ) {
 		 * @return string
 		 */
 
-		public function accept_link( $atts = array(), $content = null, $tag = ''
-		) {
+		public function accept_link( $atts = array(), $content = null, $tag = '' ) {
 			$atts = array_change_key_case( (array) $atts, CASE_LOWER );
 			ob_start();
 			$atts = shortcode_atts( array( 'text' => false ), $atts, $tag );
-			$accept_text = $atts['text'] ?: __("Click to accept marketing cookies", "complianz-gdpr");
-			$html = '<div class="cmplz-custom-accept-btn cmplz-accept"><a href="#">' . $accept_text . '</a></div>';
+			$accept_text = $atts['text'] ? sanitize_text_field( $atts['text'] ) : __("Click to accept marketing cookies", "complianz-gdpr");
+			$html = '<div class="cmplz-custom-accept-btn cmplz-accept"><a href="#">' . esc_html( $accept_text ) . '</a></div>';
 			echo $html;
 			return ob_get_clean();
 		}

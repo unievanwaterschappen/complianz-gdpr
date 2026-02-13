@@ -14,7 +14,7 @@ function cmplz_wp_google_map_plugin_script( $tags ) {
 		'category'           => 'marketing',
 		'placeholder'        => 'google-maps',
 		'urls'               => array(
-			'maps.js',
+			'maps.min.js',
 			'maps.googleapis.com',
 			'maps.google.com',
 			'wpgmp_frontend.min.js',
